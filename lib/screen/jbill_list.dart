@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login/screen/bill_add.dart';
-import 'package:flutter_login/screen/bill_open.dart';
+import 'package:flutter_login/screen/jbill_add.dart';
+import 'package:flutter_login/screen/jbill_open.dart';
 import 'package:flutter_login/screen/menu.dart';
-import 'package:flutter_login/services/bill_service.dart';
+import 'package:flutter_login/services/jbill_service.dart';
 import 'package:flutter_login/utils/snackbar_helper.dart';
-import 'package:flutter_login/widget/bill_card.dart';
+import 'package:flutter_login/widget/jbill_card.dart';
 import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 
-class BillListPage extends StatefulWidget {
-  const BillListPage({super.key});
+class JbillListPage extends StatefulWidget {
+  const JbillListPage({super.key});
 
   @override
-  State<BillListPage> createState() => _BillListPageState();
+  State<JbillListPage> createState() => _JbillListPageState();
 }
 
-class _BillListPageState extends State<BillListPage> {
+class _JbillListPageState extends State<JbillListPage> {
   bool isLoading = true;
   List items = [];
   bool printBinded = false;
@@ -61,7 +61,7 @@ class _BillListPageState extends State<BillListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Bill list'),
+          title: Text('Jbill list'),
         ),
         body: Visibility(
           visible: isLoading,
@@ -83,7 +83,7 @@ class _BillListPageState extends State<BillListPage> {
                     final item = items[index] as Map;
                     // ignore: unused_local_variable
                     final id = item['bill_id'].toString() as String;
-                    return Bill_Card(
+                    return Jbill_Card(
                       index: index,
                       item: item,
                       deleteById: deleteById,
@@ -96,7 +96,7 @@ class _BillListPageState extends State<BillListPage> {
         ),
         floatingActionButton: FloatingActionButton(
             // onPressed: navigatetedToAdd, child: Icon(Icons.add)
-            onPressed: navigatetedOpenbill,
+            onPressed: navigatetedOpenjbill,
             child: Icon(Icons.add)),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
@@ -136,7 +136,7 @@ class _BillListPageState extends State<BillListPage> {
         }));
       } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return BillListPage();
+          return JbillListPage();
         }));
       }
     });
@@ -149,7 +149,7 @@ class _BillListPageState extends State<BillListPage> {
     await Navigator.push(context, route);
   }
 
-  Future<void> navigatetedOpenbill() async {
+  Future<void> navigatetedOpenjbill() async {
     final route = MaterialPageRoute(
       builder: (context) => OpenTodoPage(),
     );
@@ -179,7 +179,7 @@ class _BillListPageState extends State<BillListPage> {
   }
 
   Future<void> deleteById(String id) async {
-    final isSuccess = await BillService.deleteById(id);
+    final isSuccess = await JbillService.deleteById(id);
     if (isSuccess) {
       final filtered = items.where((element) => element['_id'] != id).toList();
       setState(() {
@@ -193,7 +193,7 @@ class _BillListPageState extends State<BillListPage> {
   }
 
   Future<void> fetchTodo() async {
-    final response = await BillService.fetchTodos();
+    final response = await JbillService.fetchTodos();
     print(response);
 
     if (response != null) {

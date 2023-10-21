@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login/screen/bill_list.dart';
+import 'package:flutter_login/screen/menu.dart';
 import 'package:flutter_login/screen/order_add.dart';
 import 'package:flutter_login/services/order_service.dart';
 import 'package:flutter_login/utils/snackbar_helper.dart';
@@ -6,7 +8,8 @@ import 'package:flutter_login/widget/order_card.dart';
 import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 
 class OrderListPage extends StatefulWidget {
-  const OrderListPage({super.key});
+  const OrderListPage({super.key, this.billCode});
+  final String? billCode;
 
   @override
   State<OrderListPage> createState() => _OrderListPageState();
@@ -19,12 +22,19 @@ class _OrderListPageState extends State<OrderListPage> {
   int paperSize = 0;
   String serialNumber = "";
   String printerVersion = "";
+  String getMaxBillCode = "";
+
+  int _selectedIndex = 1;
 
   @override
   void initState() {
     super.initState();
-    fetchTodo();
-    
+
+    Future.microtask(() async {
+      await fetchmaxTodo();
+      fetchTodo();
+    });
+
     _bindingPrinter().then((bool? isBind) async {
       SunmiPrinter.paperSize().then((int size) {
         setState(() {
@@ -58,42 +68,85 @@ class _OrderListPageState extends State<OrderListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Order List'),
-      ),
-      body: Visibility(
-        visible: isLoading,
-        child: Center(child: CircularProgressIndicator()),
-        replacement: RefreshIndicator(
-          onRefresh: fetchTodo,
-          child: Visibility(
-            visible: items.isNotEmpty,
-            replacement: Center(
-              child: Text(
-                'No Item to do',
-                style: Theme.of(context).textTheme.headline3,
+        appBar: AppBar(
+          // title: Text("order list"),
+          title: Text(getMaxBillCode),
+        ),
+        body: Visibility(
+          visible: isLoading,
+          child: Center(child: CircularProgressIndicator()),
+          replacement: RefreshIndicator(
+            onRefresh: fetchTodo,
+            child: Visibility(
+              visible: items.isNotEmpty,
+              replacement: Center(
+                child: Text(
+                  'No Item to do',
+                  style: Theme.of(context).textTheme.headline3,
+                ),
               ),
+              child: ListView.builder(
+                  itemCount: items.length,
+                  padding: EdgeInsets.all(12),
+                  itemBuilder: (context, index) {
+                    final item = items[index] as Map;
+                    // ignore: unused_local_variable
+                    final id = item['bill_id'].toString() as String;
+                    return Order_Card(
+                      index: index,
+                      item: item,
+                      deleteById: deleteById,
+                      navigateEdit: navigatetedToEdit,
+                      navigatePrint: navigatetedToPrint,
+                    );
+                  }),
             ),
-            child: ListView.builder(
-                itemCount: items.length,
-                padding: EdgeInsets.all(12),
-                itemBuilder: (context, index) {
-                  final item = items[index] as Map;
-                  // ignore: unused_local_variable
-                  final id = item['order_id'].toString() as String;
-                  return Order_Card(
-                    index: index,
-                    item: item,
-                    deleteById: deleteById,
-                    navigatePrint: navigatetedToPrint,
-                  );
-                }),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: navigatetedOrderAdd, child: Icon(Icons.add)),
-    );
+        floatingActionButton: FloatingActionButton(
+            onPressed: navigatetedToAdd, child: Icon(Icons.add)),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu_book),
+              label: 'ເມນູ',
+              backgroundColor: Colors.blue,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.receipt_long),
+              label: 'ຂາຍ',
+              backgroundColor: Colors.blue,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.school),
+              label: 'ລາຍງານ',
+              backgroundColor: Colors.blue,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'ຕັ້ງຄ່າ',
+              backgroundColor: Colors.blue,
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Color.fromRGBO(25, 2, 105, 1),
+          onTap: _onItemTapped,
+        ));
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (index == 0) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return menuScreen();
+        }));
+      } else if (index == 1) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return BillListPage();
+        }));
+      }
+    });
   }
 
   Future<void> navigatetedToPrint(Map item) async {
@@ -103,15 +156,24 @@ class _OrderListPageState extends State<OrderListPage> {
     await Navigator.push(context, route);
   }
 
-  Future<void> navigatetedOrderAdd() async {
+  Future<void> navigatetedToAdd() async {
     final route = MaterialPageRoute(
-      builder: (context) => AddTodoPage(),
+      builder: (context) =>
+          AddTodoPage(billCode: widget.billCode ?? getMaxBillCode),
     );
     await Navigator.push(context, route);
     setState(() {
       isLoading = true;
     });
+
     fetchTodo();
+  }
+
+  Future<void> navigatetedToEdit(Map item) async {
+    final route = MaterialPageRoute(
+      builder: (context) => AddTodoPage(todo: item),
+    );
+    await Navigator.push(context, route);
   }
 
   Future<void> deleteById(String id) async {
@@ -129,11 +191,35 @@ class _OrderListPageState extends State<OrderListPage> {
   }
 
   Future<void> fetchTodo() async {
-    final response = await OrderService.fetchTodos();
+    print('call data successfully');
+    final response =
+        await OrderService.fetchTodos(widget.billCode ?? getMaxBillCode);
+    // final response = await OrderService.fetchTodos();
+    print('get fetchmaxbill');
+    print(response);
 
     if (response != null) {
       setState(() {
         items = response;
+      });
+    } else {
+      // ignore: use_build_context_synchronously
+      showErrorMessage(context, message: 'Somthing went wrong');
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> fetchmaxTodo() async {
+    print('call RRN get maxTodo');
+    // final response = await OrderService.fetchTodos(widget.billCode);
+    final response = await OrderService.fetchmaxbill();
+    print('get fetchmaxbill');
+    print(response);
+    if (response != null) {
+      setState(() {
+        getMaxBillCode = response[0]['bill_code'];
       });
     } else {
       // ignore: use_build_context_synchronously

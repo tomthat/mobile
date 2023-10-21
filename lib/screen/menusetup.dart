@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login/screen/branchs.dart';
-import 'package:flutter_login/screen/exch_list.dart';
+// import 'package:flutter_login/screen/exch_list.dart';
 import 'package:flutter_login/screen/user_list.dart';
 
 class menusetupScreen extends StatefulWidget {
@@ -50,11 +49,7 @@ class _menusetupScreenState extends State<menusetupScreen> {
             Card(
               // margin: const EdgeInsets.all(8.0),
               child: InkWell(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return branchsScreen();
-                  }));
-                },
+                onTap: () {},
                 splashColor: Colors.blue,
                 child: Center(
                     child: Column(
@@ -73,11 +68,7 @@ class _menusetupScreenState extends State<menusetupScreen> {
             Card(
               // margin: const EdgeInsets.all(8.0),
               child: InkWell(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ExchListPage();
-                  }));
-                },
+                onTap: () {},
                 splashColor: Colors.blue,
                 child: Center(
                     child: Column(

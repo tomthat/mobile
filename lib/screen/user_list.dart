@@ -79,11 +79,12 @@ class _UserListPageState extends State<UserListPage> {
                 itemBuilder: (context, index) {
                   final item = items[index] as Map;
                   // ignore: unused_local_variable
-                  final id = item['user_id'] as String;
+                  final id = item['user_id'].toString() as String;
                   return User_Card(
                     index: index,
                     item: item,
                     deleteById: deleteById,
+                    navigateEdit: navigatetedToEdit,
                     navigatePrint: navigatetedToPrint,
                   );
                 }),
@@ -113,6 +114,13 @@ class _UserListPageState extends State<UserListPage> {
     fetchTodo();
   }
 
+  Future<void> navigatetedToEdit(Map item) async {
+    final route = MaterialPageRoute(
+      builder: (context) => AddTodoPage(todo: item),
+    );
+    await Navigator.push(context, route);
+  }
+
   Future<void> deleteById(String id) async {
     final isSuccess = await UserService.deleteById(id);
     if (isSuccess) {
@@ -129,6 +137,7 @@ class _UserListPageState extends State<UserListPage> {
 
   Future<void> fetchTodo() async {
     final response = await UserService.fetchTodos();
+    print(response);
 
     if (response != null) {
       setState(() {

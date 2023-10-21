@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/screen/order_list.dart';
-import 'package:flutter_login/services/bill_service.dart';
+import 'package:flutter_login/services/jbill_service.dart';
 import 'package:flutter_login/utils/snackbar_helper.dart';
 
 class AddTodoPage extends StatefulWidget {
@@ -83,7 +83,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     }
     final id = todo['bill_id'];
 
-    final isSuccess = await BillService.updateTodo(id.toString(), body);
+    final isSuccess = await JbillService.updateTodo(id.toString(), body);
 
     if (isSuccess) {
       print('Update Success');
@@ -98,7 +98,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
   }
 
   Future<void> submitData() async {
-    final isSuccess = await BillService.addTodo(body);
+    final isSuccess = await JbillService.addTodo(body);
 
     if (isSuccess) {
       print('Creation Success');

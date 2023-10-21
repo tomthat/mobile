@@ -1,40 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/screen/order_list.dart';
-import 'package:flutter_login/services/bill_service.dart';
+import 'package:flutter_login/services/jbill_service.dart';
 import 'package:flutter_login/utils/snackbar_helper.dart';
 
-class AddTodoPage extends StatefulWidget {
+class OpenTodoPage extends StatefulWidget {
   final Map? todo;
-  const AddTodoPage({
+
+  const OpenTodoPage({
     super.key,
     this.todo,
   });
 
   @override
-  State<AddTodoPage> createState() => _AddTodoPageState();
+  State<OpenTodoPage> createState() => _OpenTodoPageState();
 }
 
-class _AddTodoPageState extends State<AddTodoPage> {
+class _OpenTodoPageState extends State<OpenTodoPage> {
   TextEditingController ccy_rateController = TextEditingController();
   TextEditingController total_priceController = TextEditingController();
 
   bool isEdit = false;
 
+  get item => null;
+
   @override
   void initState() {
     ccy_rateController.text = "650";
-    // total_priceController.text = "Franck";
+    total_priceController.text = "0";
     // last_nameController.text = "Lampard";
     // nick_nameController.text = "Messi";
     // brith_dateController.text = "2023-10-06";
     super.initState();
+    //-------------------------------------------------inser auto
+    submitData();
+    // Navigator.push(context, MaterialPageRoute(builder: (context) {
+    //   return Order_listmaxPage();
+    // }));
 
     final todo = widget.todo;
     if (todo != null) {
       isEdit = true;
 
       final ccy_rate = todo['ccy_rate'];
-      final total_price = todo['call_price'];
+      final total_price = todo['total_price'];
 
       ccy_rateController.text = ccy_rate;
       total_priceController.text = total_price;
@@ -45,7 +53,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEdit ? 'ແກ້ໄຂ' : 'ເພີມລາຍການ'),
+        title: Text(isEdit ? 'ແກ້ໄຂ' : 'Jbill open'),
       ),
       body: ListView(
         padding: EdgeInsets.all(20),
@@ -83,14 +91,11 @@ class _AddTodoPageState extends State<AddTodoPage> {
     }
     final id = todo['bill_id'];
 
-    final isSuccess = await BillService.updateTodo(id.toString(), body);
+    final isSuccess = await JbillService.updateTodo(id.toString(), body);
 
     if (isSuccess) {
       print('Update Success');
       showSuccessMessage(context, message: 'ແກ້ໄຂສຳເລັດ');
-      // Navigator.push(context, MaterialPageRoute(builder: (context) {
-      //     return BillListPage();
-      //   }));
     } else {
       print('Update Failed');
       showErrorMessage(context, message: 'ແກ້ໄຂບໍ່ສຳເລັດ');
@@ -98,10 +103,12 @@ class _AddTodoPageState extends State<AddTodoPage> {
   }
 
   Future<void> submitData() async {
-    final isSuccess = await BillService.addTodo(body);
+    final isSuccess = await JbillService.addTodo(body);
+    // final billCode = item['bill_code'].toString() as String;
 
     if (isSuccess) {
-      print('Creation Success');
+      print('Creation Success2');
+
       showSuccessMessage(context, message: 'ເພີມສຳເລັດ');
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return OrderListPage();

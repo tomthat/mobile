@@ -6,57 +6,59 @@ class Bill_Card extends StatelessWidget {
   final int index;
   final Map item;
   final Function(Map) navigatePrint;
+  final Function(Map) navigateEdit;
   final Function(String) deleteById;
+
   const Bill_Card({
     super.key,
     required this.index,
     required this.item,
     required this.navigatePrint,
     required this.deleteById,
+    required this.navigateEdit,
   });
 
   void onPrint(int index) async {
     await SunmiPrinter.initPrinter();
     await SunmiPrinter.startTransactionPrint(true);
-    await SunmiPrinter.printText('ວັນທີ : ${item['bill_date'].toString()}');
-    await SunmiPrinter.printText('ລະຫັດ     : ${item['bill_id'].toString()}');
-    await SunmiPrinter.printText(
-        'ເລັດເງິນ    : ${item['thb_rate'].toString()}');
-    await SunmiPrinter.printText('ລາຄາ(ບາດ) : ${item['total_thb'].toString()}');
-    await SunmiPrinter.printText(
-        'ລາຄາ(ກິບ)  : ${item['total_lak'].toString()}');
-    await SunmiPrinter.printText(
-        'ຜູ້ຂາຍ      : ${item['bill_user'].toString()}');
-    await SunmiPrinter.printText('');
-    await SunmiPrinter.printQRCode('${item['bill_id'].toString()}', size: 10);
-    await SunmiPrinter.printText('');
+    await SunmiPrinter.printText('date  : ${item['date_mod'].toString()}');
+    await SunmiPrinter.printText('ລາຍການ');
+    await SunmiPrinter.printText('${item['detail'].toString()}');
+    await SunmiPrinter.printText('ລວມ: ${item['total_price'].toString()}');
+    await SunmiPrinter.printText('ຊຳລະ  : ${item['pay_price'].toString()}');
 
+    await SunmiPrinter.printText('');
+    await SunmiPrinter.printQRCode('${item['bill_code'].toString()}', size: 10);
+    await SunmiPrinter.printText('');
     await SunmiPrinter.lineWrap(2);
     await SunmiPrinter.exitTransactionPrint(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final id = item['bill_id'] as String;
+    final id = item['bill_id'].toString() as String;
+    final billCode = item['bill_code'].toString() as String;
     return GestureDetector(
       onTap: () {
         // OrderListPage();
         // onPrint(index);
         // print('onTap');
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return OrderListPage();
+          return OrderListPage(billCode: billCode);
         }));
       },
       child: Card(
         child: ListTile(
           leading: CircleAvatar(child: Text('${index + 1}')),
-          title: Text(item['bill_id']),
-          subtitle: Text(item['total_lak'].toString()),
+          title: Text(item['bill_time'].toString()),
+          subtitle: Text(item['total_price'].toString()),
           trailing: PopupMenuButton(
             onSelected: (value) {
               if (value == 'print') {
-                // navigatePrint(item);
+                navigateEdit(item).toString();
                 onPrint(index);
+              } else if (value == 'edit') {
+                navigateEdit(item).toString();
               } else if (value == 'delete') {
                 deleteById(id);
               }
@@ -66,6 +68,10 @@ class Bill_Card extends StatelessWidget {
                 PopupMenuItem(
                   child: Text('ພິມ'),
                   value: 'print',
+                ),
+                PopupMenuItem(
+                  child: Text('ຊຳລະເງິນ'),
+                  value: 'edit',
                 ),
                 PopupMenuItem(
                   child: Text('ລືບ'),

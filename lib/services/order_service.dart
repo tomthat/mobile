@@ -4,14 +4,39 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 class OrderService {
-  static Future<List?> fetchTodos() async {
-    final url =
-        'https://script.google.com/macros/s/AKfycbzWRnuNAlLyCJ1bNS-qrZMBaotHNwz0WFVdizQ0kgmzS4mD3HxcUus-yPSpXDd4pgnc/exec?action=getorders';
+  static Future<List?> fetchmaxbill() async {
+    final url = "http://139.59.114.197:3000/maxbills";
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body) as Map;
-      final result = json['orders'] as List;
+      final result = json['data'] as List;
+      return result;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List?> fetchTodos(String? billCode) async {
+    final url = "http://139.59.114.197:3000/orders/$billCode";
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map;
+      final result = json['data'] as List;
+      return result;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List?> fetchWhere(String id) async {
+    final url = "http://139.59.114.197:3000/orders/$id";
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map;
+      final result = json['data'] as List;
       return result;
     } else {
       return null;
@@ -19,30 +44,31 @@ class OrderService {
   }
 
   static Future<bool> deleteById(String id) async {
-    final url = 'https://api.nstack.in/v1/todos/$id';
+    final url = 'http://139.59.114.197:3000/orders/$id';
     final uri = Uri.parse(url);
     final response = await http.delete(uri);
     return response.statusCode == 200;
   }
 
   static Future<bool> updateTodo(String id, Map body) async {
-    final url = 'https://api.nstack.in/v1/todos/$id';
+    log(jsonEncode(body));
+    final url = 'http://139.59.114.197:3000/orders/$id';
     final uri = Uri.parse(url);
     final response = await http.put(uri,
         body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
+    log(response.statusCode.toString());
     return response.statusCode == 200;
   }
 
   static Future<bool> addTodo(Map body) async {
     log(jsonEncode(body));
-    final url =
-        'https://script.google.com/macros/s/AKfycbyDE9M3dHFTrovMwTcsSJC3t3VQcMW8uPQNowskV-5oZA3lIN_uuaeZYstls1FDqSy0cg/exec?action=addOrder';
+    final url = 'http://139.59.114.197:3000/orders';
     final uri = Uri.parse(url);
     final response = await http.post(uri,
         body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
 
     log(response.statusCode.toString());
-    return response.statusCode == 302;
+    return response.statusCode == 201;
   }
 
   static Future<Map?> fetchGetRate() async {

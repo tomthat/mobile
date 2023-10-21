@@ -25,12 +25,11 @@ class _AddTodoPageState extends State<AddTodoPage> {
 
   @override
   void initState() {
-    phoneController.text = "2055552205";
-    nick_nameController.text = "650000";
-    first_nameController.text = "Franck";
-    last_nameController.text = "Lampard";
-    nick_nameController.text = "Messi";
-    brith_dateController.text = "2023-10-06";
+    //phoneController.text = "20";
+    // first_nameController.text = "Franck";
+    // last_nameController.text = "Lampard";
+    // nick_nameController.text = "Messi";
+    // brith_dateController.text = "2023-10-06";
     super.initState();
 
     final todo = widget.todo;
@@ -64,25 +63,25 @@ class _AddTodoPageState extends State<AddTodoPage> {
           TextField(
             controller: phoneController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'phone'),
+            decoration: InputDecoration(hintText: '20 ເບີໂທ'),
           ),
           Text(''),
           TextField(
             controller: first_nameController,
             keyboardType: TextInputType.name,
-            decoration: InputDecoration(hintText: 'first_name'),
-          ),
-          Text(''),
-          TextField(
-            controller: nick_nameController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'nick_name'),
+            decoration: InputDecoration(hintText: 'ຊື້'),
           ),
           Text(''),
           TextField(
             controller: last_nameController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'last_name'),
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(hintText: 'ນາມສະກຸນ'),
+          ),
+          Text(''),
+          TextField(
+            controller: nick_nameController,
+            keyboardType: TextInputType.name,
+            decoration: InputDecoration(hintText: 'ຊື້ເລັນ'),
           ),
           Text(''),
           TextField(
@@ -129,9 +128,9 @@ class _AddTodoPageState extends State<AddTodoPage> {
       print('can not update api ');
       return;
     }
-    final id = todo['userer_id'];
+    final id = todo['user_id'];
 
-    final isSuccess = await UserService.updateTodo(id, body);
+    final isSuccess = await UserService.updateTodo(id.toString(), body);
 
     if (isSuccess) {
       print('Update Success');
