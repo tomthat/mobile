@@ -19,6 +19,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
   TextEditingController first_nameController = TextEditingController();
   TextEditingController last_nameController = TextEditingController();
   TextEditingController nick_nameController = TextEditingController();
+  TextEditingController commissionController = TextEditingController();
   TextEditingController brith_dateController = TextEditingController();
 
   bool isEdit = false;
@@ -40,13 +41,15 @@ class _AddTodoPageState extends State<AddTodoPage> {
       final first_name = todo['first_name'];
       final last_name = todo['last_name'];
       final nick_name = todo['nick_name'];
+      final commission = todo['commission'];
       final brith_date = todo['brith_date'];
 
-      phoneController.text = phone;
-      first_nameController.text = first_name;
-      last_nameController.text = last_name;
-      nick_nameController.text = nick_name;
-      brith_dateController.text = brith_date;
+      phoneController.text = phone.toString();
+      first_nameController.text = first_name.toString();
+      last_nameController.text = last_name.toString();
+      nick_nameController.text = nick_name.toString();
+      commissionController.text = commission.toString();
+      brith_dateController.text = brith_date.toString();
     }
   }
 
@@ -82,6 +85,12 @@ class _AddTodoPageState extends State<AddTodoPage> {
             controller: nick_nameController,
             keyboardType: TextInputType.name,
             decoration: InputDecoration(hintText: 'ຊື້ເລັນ'),
+          ),
+          Text(''),
+          TextField(
+            controller: commissionController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: 'ເປີເຊັນ %'),
           ),
           Text(''),
           TextField(
@@ -158,6 +167,8 @@ class _AddTodoPageState extends State<AddTodoPage> {
     final phone = phoneController.text;
     final nick_name = nick_nameController.text;
     final first_name = first_nameController.text;
+
+    final commission = commissionController.text;
     final brith_date = brith_dateController.text;
     return {
       "email": "nija@gmail.com",
@@ -169,7 +180,8 @@ class _AddTodoPageState extends State<AddTodoPage> {
       "nick_name": nick_name,
       "address": "address",
       "brith_date": brith_date,
-      "user_status": "ACTIVE"
+      "user_status": "ACTIVE",
+      "commission": "35"
     };
   }
 }

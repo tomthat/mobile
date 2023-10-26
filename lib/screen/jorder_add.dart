@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login/screen/order_list.dart';
-import 'package:flutter_login/services/order_service.dart';
+import 'package:flutter_login/screen/jorder_list.dart';
+import 'package:flutter_login/services/jorder_service.dart';
 import 'package:flutter_login/utils/snackbar_helper.dart';
 
 class AddTodoPage extends StatefulWidget {
@@ -52,7 +52,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEdit ? 'ແກ້ໄຂ' : 'orderadd'),
+        title: Text(isEdit ? 'ແກ້ໄຂ' : 'jorderadd'),
       ),
       body: ListView(
         padding: EdgeInsets.all(20),
@@ -103,7 +103,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     }
     final id = todo['bill_id'];
 
-    final isSuccess = await OrderService.updateTodo(id.toString(), body);
+    final isSuccess = await JOrderService.updateTodo(id.toString(), body);
 
     if (isSuccess) {
       print('Update Success');
@@ -115,13 +115,13 @@ class _AddTodoPageState extends State<AddTodoPage> {
   }
 
   Future<void> submitData() async {
-    final isSuccess = await OrderService.addTodo(body);
+    final isSuccess = await JOrderService.addTodo(body);
 
     if (isSuccess) {
       print('Creation Success');
       showSuccessMessage(context, message: 'ເພີມສຳເລັດ');
       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return OrderListPage();
+        return JOrderListPage();
       }));
     } else {
       print('Creation Failed');

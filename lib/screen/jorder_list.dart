@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login/screen/bill_add.dart';
-import 'package:flutter_login/screen/bill_open.dart';
+import 'package:flutter_login/screen/bill_list.dart';
 import 'package:flutter_login/screen/jbill_list.dart';
+import 'package:flutter_login/screen/jorder_add.dart';
 import 'package:flutter_login/screen/menu.dart';
-import 'package:flutter_login/services/bill_service.dart';
+import 'package:flutter_login/services/jorder_service.dart';
 import 'package:flutter_login/utils/snackbar_helper.dart';
-import 'package:flutter_login/widget/bill_card.dart';
+import 'package:flutter_login/widget/jorder_card.dart';
 import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 
-class BillListPage extends StatefulWidget {
-  const BillListPage({super.key});
+class JOrderListPage extends StatefulWidget {
+  const JOrderListPage({super.key, this.billCode});
+  final String? billCode;
 
   @override
-  State<BillListPage> createState() => _BillListPageState();
+  State<JOrderListPage> createState() => _JOrderListPageState();
 }
 
-class _BillListPageState extends State<BillListPage> {
+class _JOrderListPageState extends State<JOrderListPage> {
   bool isLoading = true;
   List items = [];
   bool printBinded = false;
   int paperSize = 0;
   String serialNumber = "";
   String printerVersion = "";
-  int _selectedIndex = 1;
+  String getMaxBillCode = "";
+
+  int _selectedIndex = 2;
 
   @override
   void initState() {
     super.initState();
-    fetchTodo();
+
+    Future.microtask(() async {
+      await fetchmaxTodo();
+      fetchTodo();
+    });
+
     _bindingPrinter().then((bool? isBind) async {
       SunmiPrinter.paperSize().then((int size) {
         setState(() {
@@ -62,7 +70,8 @@ class _BillListPageState extends State<BillListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Bill list'),
+          // title: Text("order list"),
+          title: Text(getMaxBillCode),
         ),
         body: Visibility(
           visible: isLoading,
@@ -84,7 +93,7 @@ class _BillListPageState extends State<BillListPage> {
                     final item = items[index] as Map;
                     // ignore: unused_local_variable
                     final id = item['bill_id'].toString() as String;
-                    return Bill_Card(
+                    return JOrder_Card(
                       index: index,
                       item: item,
                       deleteById: deleteById,
@@ -96,9 +105,7 @@ class _BillListPageState extends State<BillListPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-            // onPressed: navigatetedToAdd, child: Icon(Icons.add)
-            onPressed: navigatetedOpenbill,
-            child: Icon(Icons.add)),
+            onPressed: navigatetedToAdd, child: Icon(Icons.add)),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -139,7 +146,7 @@ class _BillListPageState extends State<BillListPage> {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return BillListPage();
         }));
-      } else if (index == 2) {
+      }else if (index == 2) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return JbillListPage();
         }));
@@ -154,25 +161,16 @@ class _BillListPageState extends State<BillListPage> {
     await Navigator.push(context, route);
   }
 
-  Future<void> navigatetedOpenbill() async {
-    final route = MaterialPageRoute(
-      builder: (context) => OpenTodoPage(),
-    );
-    await Navigator.push(context, route);
-    setState(() {
-      isLoading = true;
-    });
-    fetchTodo();
-  }
-
   Future<void> navigatetedToAdd() async {
     final route = MaterialPageRoute(
-      builder: (context) => AddTodoPage(),
+      builder: (context) =>
+          AddTodoPage(billCode: widget.billCode ?? getMaxBillCode),
     );
     await Navigator.push(context, route);
     setState(() {
       isLoading = true;
     });
+
     fetchTodo();
   }
 
@@ -184,7 +182,7 @@ class _BillListPageState extends State<BillListPage> {
   }
 
   Future<void> deleteById(String id) async {
-    final isSuccess = await BillService.deleteById(id);
+    final isSuccess = await JOrderService.deleteById(id);
     if (isSuccess) {
       final filtered = items.where((element) => element['_id'] != id).toList();
       setState(() {
@@ -198,12 +196,35 @@ class _BillListPageState extends State<BillListPage> {
   }
 
   Future<void> fetchTodo() async {
-    final response = await BillService.fetchTodos();
+    print('call data successfully');
+    final response =
+        await JOrderService.fetchTodos(widget.billCode ?? getMaxBillCode);
+    // final response = await OrderService.fetchTodos();
+    print('get fetchmaxbill');
     print(response);
 
     if (response != null) {
       setState(() {
         items = response;
+      });
+    } else {
+      // ignore: use_build_context_synchronously
+      showErrorMessage(context, message: 'Somthing went wrong');
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> fetchmaxTodo() async {
+    print('call RRN get maxTodo');
+    // final response = await OrderService.fetchTodos(widget.billCode);
+    final response = await JOrderService.fetchmaxbill();
+    print('get fetchmaxbill');
+    print(response);
+    if (response != null) {
+      setState(() {
+        getMaxBillCode = response[0]['bill_code'];
       });
     } else {
       // ignore: use_build_context_synchronously

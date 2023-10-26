@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login/screen/jbill_add.dart';
+import 'package:flutter_login/screen/bill_list.dart';
+// import 'package:flutter_login/screen/jbill_add.dart';
 import 'package:flutter_login/screen/jbill_open.dart';
 import 'package:flutter_login/screen/menu.dart';
 import 'package:flutter_login/services/jbill_service.dart';
@@ -21,7 +22,7 @@ class _JbillListPageState extends State<JbillListPage> {
   int paperSize = 0;
   String serialNumber = "";
   String printerVersion = "";
-  int _selectedIndex = 1;
+  int _selectedIndex = 2;
 
   @override
   void initState() {
@@ -111,7 +112,7 @@ class _JbillListPageState extends State<JbillListPage> {
               backgroundColor: Colors.blue,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.school),
+              icon: Icon(Icons.eco),
               label: 'ລາຍງານ',
               backgroundColor: Colors.blue,
             ),
@@ -136,6 +137,10 @@ class _JbillListPageState extends State<JbillListPage> {
         }));
       } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return BillListPage();
+        }));
+      }else if (index == 2) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
           return JbillListPage();
         }));
       }
@@ -144,7 +149,7 @@ class _JbillListPageState extends State<JbillListPage> {
 
   Future<void> navigatetedToPrint(Map item) async {
     final route = MaterialPageRoute(
-      builder: (context) => AddTodoPage(todo: item),
+      builder: (context) => OpenTodoPage(todo: item),
     );
     await Navigator.push(context, route);
   }
@@ -162,7 +167,7 @@ class _JbillListPageState extends State<JbillListPage> {
 
   Future<void> navigatetedToAdd() async {
     final route = MaterialPageRoute(
-      builder: (context) => AddTodoPage(),
+      builder: (context) => OpenTodoPage(),
     );
     await Navigator.push(context, route);
     setState(() {
@@ -173,7 +178,7 @@ class _JbillListPageState extends State<JbillListPage> {
 
   Future<void> navigatetedToEdit(Map item) async {
     final route = MaterialPageRoute(
-      builder: (context) => AddTodoPage(todo: item),
+      builder: (context) => OpenTodoPage(todo: item),
     );
     await Navigator.push(context, route);
   }

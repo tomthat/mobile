@@ -36,8 +36,8 @@ class _AddTodoPageState extends State<AddTodoPage> {
       final ccy_rate = todo['ccy_rate'];
       final total_price = todo['call_price'];
 
-      ccy_rateController.text = ccy_rate;
-      total_priceController.text = total_price;
+      ccy_rateController.text = ccy_rate.toString();
+      total_priceController.text = total_price.toString();
     }
   }
 

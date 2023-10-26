@@ -246,7 +246,7 @@ class _menuScreenState extends State<menuScreen> {
               backgroundColor: Colors.blue,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.school),
+              icon: Icon(Icons.eco),
               label: 'ລາຍງານ',
               backgroundColor: Colors.blue,
             ),
@@ -272,6 +272,11 @@ class _menuScreenState extends State<menuScreen> {
       } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return BillListPage();
+        }));
+      }
+      else if (index == 2) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return JbillListPage();
         }));
       }
     });

@@ -3,9 +3,35 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 
-class JbillService {
-  static Future<List?> fetchTodos() async {
-    final url = "http://139.59.114.197:3000/vgjbills";
+class JOrderService {
+  static Future<List?> fetchmaxbill() async {
+    final url = "http://139.59.114.197:3000/maxbills";
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map;
+      final result = json['data'] as List;
+      return result;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List?> fetchTodos(String? billCode) async {
+    final url = "http://139.59.114.197:3000/jorders/$billCode";
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map;
+      final result = json['data'] as List;
+      return result;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<List?> fetchWhere(String id) async {
+    final url = "http://139.59.114.197:3000/jorders/$id";
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     if (response.statusCode == 200) {
@@ -18,7 +44,7 @@ class JbillService {
   }
 
   static Future<bool> deleteById(String id) async {
-    final url = 'http://139.59.114.197:3000/jbills/$id';
+    final url = 'http://139.59.114.197:3000/jorders/$id';
     final uri = Uri.parse(url);
     final response = await http.delete(uri);
     return response.statusCode == 200;
@@ -26,7 +52,7 @@ class JbillService {
 
   static Future<bool> updateTodo(String id, Map body) async {
     log(jsonEncode(body));
-    final url = 'http://139.59.114.197:3000/jbills/$id';
+    final url = 'http://139.59.114.197:3000/jorders/$id';
     final uri = Uri.parse(url);
     final response = await http.put(uri,
         body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
@@ -36,7 +62,7 @@ class JbillService {
 
   static Future<bool> addTodo(Map body) async {
     log(jsonEncode(body));
-    final url = 'http://139.59.114.197:3000/jbills';
+    final url = 'http://139.59.114.197:3000/jorders';
     final uri = Uri.parse(url);
     final response = await http.post(uri,
         body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
@@ -58,19 +84,6 @@ class JbillService {
       final result =
           fromStringList.firstWhere((element) => element['ccy_code'] == 'THB');
 
-      return result;
-    } else {
-      return null;
-    }
-  }
-
-  static Future<List?> fetchWhere(String id) async {
-    final url = "http://139.59.114.197:3000/jorders/$id";
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body) as Map;
-      final result = json['data'] as List;
       return result;
     } else {
       return null;

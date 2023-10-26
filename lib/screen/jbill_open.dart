@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login/screen/order_list.dart';
+import 'package:flutter_login/screen/jorder_list.dart';
 import 'package:flutter_login/services/jbill_service.dart';
 import 'package:flutter_login/utils/snackbar_helper.dart';
 
@@ -44,8 +44,8 @@ class _OpenTodoPageState extends State<OpenTodoPage> {
       final ccy_rate = todo['ccy_rate'];
       final total_price = todo['total_price'];
 
-      ccy_rateController.text = ccy_rate;
-      total_priceController.text = total_price;
+      ccy_rateController.text = ccy_rate.toString();
+      total_priceController.text = total_price.toString();
     }
   }
 
@@ -111,7 +111,7 @@ class _OpenTodoPageState extends State<OpenTodoPage> {
 
       showSuccessMessage(context, message: 'ເພີມສຳເລັດ');
       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return OrderListPage();
+        return JOrderListPage();
       }));
     } else {
       print('Creation Failed');

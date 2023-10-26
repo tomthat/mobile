@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/screen/bill_list.dart';
+import 'package:flutter_login/screen/jbill_list.dart';
 import 'package:flutter_login/screen/menu.dart';
 import 'package:flutter_login/screen/order_add.dart';
 import 'package:flutter_login/services/order_service.dart';
@@ -118,7 +119,7 @@ class _OrderListPageState extends State<OrderListPage> {
               backgroundColor: Colors.blue,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.school),
+              icon: Icon(Icons.eco),
               label: 'ລາຍງານ',
               backgroundColor: Colors.blue,
             ),
@@ -144,6 +145,11 @@ class _OrderListPageState extends State<OrderListPage> {
       } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return BillListPage();
+        }));
+      }
+      else if (index == 2) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return JbillListPage();
         }));
       }
     });

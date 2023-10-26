@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login/screen/order_list.dart';
+import 'package:flutter_login/screen/jorder_list.dart';
 import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 
-class User_Card extends StatelessWidget {
+class JOrder_Card extends StatelessWidget {
   final int index;
   final Map item;
   final Function(Map) navigatePrint;
   final Function(Map) navigateEdit;
   final Function(String) deleteById;
 
-  const User_Card({
+  const JOrder_Card({
     super.key,
     required this.index,
     required this.item,
@@ -21,14 +21,12 @@ class User_Card extends StatelessWidget {
   void onPrint(int index) async {
     await SunmiPrinter.initPrinter();
     await SunmiPrinter.startTransactionPrint(true);
-    await SunmiPrinter.printText('phone : ${item['phone'].toString()}');
-    await SunmiPrinter.printText('gens  : ${item['gens'].toString()}');
-    await SunmiPrinter.printText('first : ${item['first_name'].toString()}');
-    await SunmiPrinter.printText('last  : ${item['last_name'].toString()}');
-    await SunmiPrinter.printText('nick  : ${item['nick_name'].toString()}');
-    await SunmiPrinter.printText('email : ${item['email'].toString()}');
+    await SunmiPrinter.printText('bill  : ${item['bill_code'].toString()}');
+    await SunmiPrinter.printText(
+        'prod_name  : ${item['prod_name'].toString()}');
+    await SunmiPrinter.printText('price : ${item['price'].toString()}');
     await SunmiPrinter.printText('');
-    await SunmiPrinter.printQRCode('${item['user_id'].toString()}', size: 10);
+    await SunmiPrinter.printQRCode('${item['bill_code'].toString()}', size: 10);
     await SunmiPrinter.printText('');
     await SunmiPrinter.lineWrap(2);
     await SunmiPrinter.exitTransactionPrint(true);
@@ -36,21 +34,21 @@ class User_Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final id = item['user_id'].toString() as String;
+    final id = item['jorder_id'].toString() as String;
     return GestureDetector(
       onTap: () {
         // OrderListPage();
         // onPrint(index);
         // print('onTap');
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return OrderListPage();
+          return JOrderListPage();
         }));
       },
       child: Card(
         child: ListTile(
           leading: CircleAvatar(child: Text('${index + 1}')),
-          title: Text(item['first_name'].toString()),
-          subtitle: Text(item['nick_name'].toString()),
+          title: Text(item['prod_name'].toString()),
+          subtitle: Text(item['price'].toString()),
           trailing: PopupMenuButton(
             onSelected: (value) {
               if (value == 'print') {
